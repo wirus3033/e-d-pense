@@ -2,7 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-const LOGO = require('@/assets/images/edeprnse.png');
+const LOGO = require('@/assets/images/logo.png');
 
 interface TopHeaderProps {
     onBackPress?: () => void;
@@ -11,10 +11,10 @@ interface TopHeaderProps {
 
 const TopHeader: React.FC<TopHeaderProps> = ({
     onBackPress,
-    logoSize = 36,
+    logoSize = 40,
 }) => {
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { height: 56 }]}>
             <View style={styles.side}>
                 {onBackPress ? (
                     <TouchableOpacity onPress={onBackPress}>
@@ -25,7 +25,13 @@ const TopHeader: React.FC<TopHeaderProps> = ({
             <View style={styles.center}>
                 <Image
                     source={LOGO}
-                    style={{ width: logoSize, height: logoSize, resizeMode: 'contain' }}
+                    style={{
+                        width: logoSize,
+                        height: logoSize,
+                        resizeMode: 'contain',
+                        maxHeight: logoSize,
+                        maxWidth: logoSize,
+                    }}
                 />
             </View>
             <View style={styles.side} />
@@ -54,6 +60,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        // backgroundColor:"red"
     },
 });
 
