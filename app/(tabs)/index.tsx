@@ -1,75 +1,186 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React from "react";
+import { Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+const { width } = Dimensions.get("window");
 
-export default function HomeScreen() {
+const data = [
+  { key: 1, amount: 25000, category: "Nourriture", color: "#FF6B6B" },
+  { key: 2, amount: 10000, category: "Transport", color: "#4ECDC4" },
+  { key: 3, amount: 15000, category: "Loyer", color: "#FFD93D" },
+];
+
+const recentTransactions = [
+  { id: "1", category: "Nourriture", amount: 5000, date: "Aujourd’hui - 13:00" },
+  { id: "2", category: "Transport", amount: 2000, date: "Aujourd’hui - 10:20" },
+  { id: "3", category: "Loyer", amount: 30000, date: "Hier - 09:00" },
+  { id: "4", category: "Nourriture", amount: 5000, date: "Aujourd’hui - 13:00" },
+  { id: "5", category: "Transport", amount: 2000, date: "Aujourd’hui - 10:20" },
+  { id: "6", category: "Loyer", amount: 30000, date: "Hier - 09:00" },
+  { id: "7", category: "Nourriture", amount: 5000, date: "Aujourd’hui - 13:00" },
+  { id: "8", category: "Transport", amount: 2000, date: "Aujourd’hui - 10:20" },
+  { id: "9", category: "Loyer", amount: 30000, date: "Hier - 09:00" },
+];
+
+export default function DashboardScreen() {
+  const total = data.reduce((sum, item) => sum + item.amount, 0);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Solde disponible</Text>
+        <Text style={styles.balance}>75 000 Ar</Text>
+      </View>
+
+      <Text style={styles.sectionTitle}>Répartition des dépenses</Text>
+      <View style={styles.barChart}>
+        {data.map((item) => {
+          const percent = total > 0 ? (item.amount / total) * 100 : 0;
+          return (
+            <View key={item.key} style={styles.barItem}>
+              <View style={styles.barLabel}>
+                <View style={[styles.barColor, { backgroundColor: item.color }]} />
+                <Text style={styles.barCategory}>{item.category}</Text>
+              </View>
+              <View style={styles.barContainer}>
+                <View
+                  style={[
+                    styles.bar,
+                    {
+                      width: `${percent}%`,
+                      backgroundColor: item.color,
+                    },
+                  ]}
+                />
+                <Text style={styles.barValue}>{item.amount.toLocaleString()} Ar</Text>
+              </View>
+            </View>
+          );
+        })}
+      </View>
+
+      <Text style={styles.sectionTitle}>Dépenses récentes</Text>
+      <View style={styles.transactionsContainer}>
+        <FlatList
+          data={recentTransactions}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.transactionItem}>
+              <Text style={styles.transactionText}>{item.category}</Text>
+              <View style={styles.transactionRight}>
+                <Text style={styles.transactionAmount}>{item.amount.toLocaleString()} Ar</Text>
+                <Text style={styles.transactionDate}>{item.date}</Text>
+              </View>
+            </View>
+          )}
+          showsVerticalScrollIndicator={false}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: "#fff",
   },
-  stepContainer: {
-    gap: 8,
+  header: {
+    marginTop: 30,
+    // marginBottom: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f5f5f5",
+    borderRadius: 8,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "600",
+    textAlign: "center",
+    marginVertical: 10,
+  },
+  balance: {
+    fontSize: 28,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#2E86DE",
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginTop: 24,
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  barChart: {
+    marginVertical: 12,
+    marginBottom: 20,
+    // backgroundColor: "#f5f5f5",
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    justifyContent: "center",
+  },
+  barItem: {
+    marginBottom: 14,
+  },
+  barLabel: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  barColor: {
+    width: 16,
+    height: 16,
+    borderRadius: 3,
+    marginRight: 8,
+  },
+  barCategory: {
+    fontSize: 16,
+    color: "#444",
+    fontWeight: "500",
+  },
+  barContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  bar: {
+    height: 14,
+    borderRadius: 7,
+    marginRight: 12,
+    minWidth: 20,
+  },
+  barValue: {
+    fontSize: 14,
+    color: "#333",
+    fontWeight: "500",
+    minWidth: 60,
+  },
+  transactionsContainer: {
+    flex: 1,
+    marginTop: 4,
+  },
+  transactionItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 12,
+    borderRadius: 10,
+    marginBottom: 8,
+    backgroundColor: "#eee",
+    paddingHorizontal: 10,
+  },
+  transactionText: {
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  transactionRight: {
+    alignItems: "flex-end",
+  },
+  transactionAmount: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#222",
+  },
+  transactionDate: {
+    fontSize: 12,
+    color: "#888",
   },
 });
