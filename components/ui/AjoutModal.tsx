@@ -42,7 +42,16 @@ export default function AddExpenseModal({ visible, onClose, onSave }) {
                     style={styles.modalContainer}
                 >
                     <Text style={styles.title}>Ajouter une {type.toLowerCase()}</Text>
-
+                    <Text style={styles.label}>Type :</Text>
+                    <View style={styles.pickerContainer}>
+                        <Picker
+                            selectedValue={type}
+                            onValueChange={setType}
+                        >
+                            <Picker.Item label="Dépense" value="Dépense" />
+                            <Picker.Item label="Revenu" value="Revenu" />
+                        </Picker>
+                    </View>
                     <TextInput
                         placeholder="Montant"
                         keyboardType="numeric"
@@ -77,16 +86,7 @@ export default function AddExpenseModal({ visible, onClose, onSave }) {
                         </Picker>
                     </View>
 
-                    <Text style={styles.label}>Type :</Text>
-                    <View style={styles.pickerContainer}>
-                        <Picker
-                            selectedValue={type}
-                            onValueChange={setType}
-                        >
-                            <Picker.Item label="Dépense" value="Dépense" />
-                            <Picker.Item label="Revenu" value="Revenu" />
-                        </Picker>
-                    </View>
+
 
                     <View style={styles.actions}>
                         <TouchableOpacity onPress={onClose} style={[styles.button, styles.cancel]}>
@@ -133,12 +133,13 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#ccc",
         borderRadius: 8,
-        padding: 10,
+        padding: 16,
         marginBottom: 12,
     },
     label: {
         fontSize: 14,
         marginTop: 8,
+        marginBottom: 4,
     },
     pickerContainer: {
         borderWidth: 1,

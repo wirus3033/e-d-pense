@@ -1,5 +1,7 @@
 import React from "react";
 import { Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
+import { BarChart } from 'react-native-gifted-charts';
+
 
 const { width } = Dimensions.get("window");
 
@@ -8,6 +10,32 @@ const data = [
   { key: 2, amount: 10000, category: "Transport", color: "#4ECDC4" },
   { key: 3, amount: 15000, category: "Loyer", color: "#FFD93D" },
 ];
+
+const data1 = [
+  { value: 20, label: 'M' },
+  { value: 30, label: 'T' },
+  {
+    value: 50,
+    label: 'W',
+    topLabelComponent: () => (
+      <Text style={{ color: 'blue', fontSize: 18, marginBottom: 6 }}>50</Text>
+    ),
+  },
+  { value: 40, label: 'T' },
+  { value: 30, label: 'F' },
+];
+
+const barData = [
+  { value: 250, label: 'M' },
+  { value: 500, label: 'T', frontColor: '#177AD5' },
+  { value: 745, label: 'W', frontColor: '#177AD5' },
+  { value: 320, label: 'T' },
+  { value: 600, label: 'F', frontColor: '#177AD5' },
+  { value: 256, label: 'S' },
+  { value: 300, label: 'S' },
+];
+
+
 
 const recentTransactions = [
   { id: "1", category: "Nourriture", amount: 5000, date: "Aujourd’hui - 13:00" },
@@ -33,7 +61,7 @@ export default function DashboardScreen() {
 
       <Text style={styles.sectionTitle}>Répartition des dépenses</Text>
       <View style={styles.barChart}>
-        {data.map((item) => {
+        {/* {data.map((item) => {
           const percent = total > 0 ? (item.amount / total) * 100 : 0;
           return (
             <View key={item.key} style={styles.barItem}>
@@ -55,7 +83,17 @@ export default function DashboardScreen() {
               </View>
             </View>
           );
-        })}
+        })} */}
+        <BarChart width={300} data={data1} frontColor="#177AD5" />
+        {/* <BarChart
+          barWidth={22}
+          noOfSections={3}
+          barBorderRadius={4}
+          frontColor="lightgray"
+          data={barData}
+          yAxisThickness={0}
+          xAxisThickness={0}
+        /> */}
       </View>
 
       <Text style={styles.sectionTitle}>Dépenses récentes</Text>
@@ -115,7 +153,7 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     marginBottom: 20,
     // backgroundColor: "#f5f5f5",
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
     borderRadius: 8,
     justifyContent: "center",
   },

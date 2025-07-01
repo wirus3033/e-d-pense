@@ -52,6 +52,15 @@ export default function TabLayout() {
           ),
         }}
       />
+            <Tabs.Screen
+        name="compte"
+        options={{
+          title: 'Compte',
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="account-circle" size={28} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
