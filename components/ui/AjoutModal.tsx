@@ -16,21 +16,40 @@ export default function AddExpenseModal({ visible, onClose, onSave }) {
     const [category, setCategory] = useState("Nourriture");
     const [method, setMethod] = useState("Cash");
     const [type, setType] = useState("Dépense");
+    const [source, setSource] = useState("");
+
+    // Remise à zéro auto sur changement de type (évite les confusions)
+    React.useEffect(() => {
+        if (type === "Dépense") {
+            setSource("");
+        } else {
+            setCategory("");
+        }
+    }, [type]);
 
     const handleSave = () => {
         if (!amount || isNaN(Number(amount))) return;
-        onSave({
+
+        const item = {
             id: Date.now().toString(),
             amount: parseInt(amount),
-            category,
             method,
             type,
             date: new Date().toLocaleString()
-        });
+        };
+
+        if (type === "Dépense") {
+            item.category = category;
+        } else {
+            item.source = source;
+        }
+
+        onSave(item);
         setAmount("");
         setCategory("Nourriture");
         setMethod("Cash");
         setType("Dépense");
+        setSource("");
         onClose();
     };
 
@@ -60,18 +79,32 @@ export default function AddExpenseModal({ visible, onClose, onSave }) {
                         style={styles.input}
                     />
 
-                    <Text style={styles.label}>Catégorie :</Text>
-                    <View style={styles.pickerContainer}>
-                        <Picker
-                            selectedValue={category}
-                            onValueChange={setCategory}
-                        >
-                            <Picker.Item label="Nourriture" value="Nourriture" />
-                            <Picker.Item label="Transport" value="Transport" />
-                            <Picker.Item label="Loyer" value="Loyer" />
-                            <Picker.Item label="Loisir" value="Loisir" />
-                        </Picker>
-                    </View>
+                    {type === "Dépense" ? (
+                        <>
+                            <Text style={styles.label}>Catégorie :</Text>
+                            <View style={styles.pickerContainer}>
+                                <Picker
+                                    selectedValue={category}
+                                    onValueChange={setCategory}
+                                >
+                                    <Picker.Item label="Nourriture" value="Nourriture" />
+                                    <Picker.Item label="Transport" value="Transport" />
+                                    <Picker.Item label="Loyer" value="Loyer" />
+                                    <Picker.Item label="Loisir" value="Loisir" />
+                                </Picker>
+                            </View>
+                        </>
+                    ) : (
+                        <>
+                            <Text style={styles.label}>Source du revenu :</Text>
+                            <TextInput
+                                placeholder="Source du revenu"
+                                value={source}
+                                onChangeText={setSource}
+                                style={styles.input}
+                            />
+                        </>
+                    )}
 
                     <Text style={styles.label}>Méthode de paiement :</Text>
                     <View style={styles.pickerContainer}>
@@ -86,8 +119,6 @@ export default function AddExpenseModal({ visible, onClose, onSave }) {
                         </Picker>
                     </View>
 
-
-
                     <View style={styles.actions}>
                         <TouchableOpacity onPress={onClose} style={[styles.button, styles.cancel]}>
                             <Text style={[styles.buttonText, { color: "#444" }]}>Annuler</Text>
@@ -95,7 +126,11 @@ export default function AddExpenseModal({ visible, onClose, onSave }) {
                         <TouchableOpacity
                             onPress={handleSave}
                             style={[styles.button, styles.save]}
-                            disabled={!amount || isNaN(Number(amount))}
+                            disabled={
+                                !amount ||
+                                isNaN(Number(amount)) ||
+                                (type === "Revenu" && !source)
+                            }
                         >
                             <Text style={styles.buttonText}>Enregistrer</Text>
                         </TouchableOpacity>

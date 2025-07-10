@@ -12,28 +12,20 @@ const data = [
 ];
 
 const data1 = [
-  { value: 20, label: 'M' },
-  { value: 30, label: 'T' },
+  { value: 20, label: 'M', frontColor: "#FF6B6B" }, 
+  { value: 30, label: 'T', frontColor: "#FF6B6B" },
   {
     value: 50,
     label: 'W',
+    frontColor: "#fef1e1", 
     topLabelComponent: () => (
       <Text style={{ color: 'blue', fontSize: 18, marginBottom: 6 }}>50</Text>
     ),
   },
-  { value: 40, label: 'T' },
-  { value: 30, label: 'F' },
+  { value: 40, label: 'T', frontColor: "#fef1e1" }, 
+  { value: 30, label: 'F', frontColor: "#A259F7" }, 
 ];
 
-const barData = [
-  { value: 250, label: 'M' },
-  { value: 500, label: 'T', frontColor: '#177AD5' },
-  { value: 745, label: 'W', frontColor: '#177AD5' },
-  { value: 320, label: 'T' },
-  { value: 600, label: 'F', frontColor: '#177AD5' },
-  { value: 256, label: 'S' },
-  { value: 300, label: 'S' },
-];
 
 
 
@@ -58,44 +50,10 @@ export default function DashboardScreen() {
         <Text style={styles.title}>Solde disponible</Text>
         <Text style={styles.balance}>75 000 Ar</Text>
       </View>
-
       <Text style={styles.sectionTitle}>Répartition des dépenses</Text>
       <View style={styles.barChart}>
-        {/* {data.map((item) => {
-          const percent = total > 0 ? (item.amount / total) * 100 : 0;
-          return (
-            <View key={item.key} style={styles.barItem}>
-              <View style={styles.barLabel}>
-                <View style={[styles.barColor, { backgroundColor: item.color }]} />
-                <Text style={styles.barCategory}>{item.category}</Text>
-              </View>
-              <View style={styles.barContainer}>
-                <View
-                  style={[
-                    styles.bar,
-                    {
-                      width: `${percent}%`,
-                      backgroundColor: item.color,
-                    },
-                  ]}
-                />
-                <Text style={styles.barValue}>{item.amount.toLocaleString()} Ar</Text>
-              </View>
-            </View>
-          );
-        })} */}
         <BarChart width={300} data={data1} frontColor="#177AD5" />
-        {/* <BarChart
-          barWidth={22}
-          noOfSections={3}
-          barBorderRadius={4}
-          frontColor="lightgray"
-          data={barData}
-          yAxisThickness={0}
-          xAxisThickness={0}
-        /> */}
       </View>
-
       <Text style={styles.sectionTitle}>Dépenses récentes</Text>
       <View style={styles.transactionsContainer}>
         <FlatList
@@ -125,10 +83,9 @@ const styles = StyleSheet.create({
   },
   header: {
     marginTop: 30,
-    // marginBottom: 20,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#FF6B6B",
     borderRadius: 8,
   },
   title: {
@@ -136,12 +93,13 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
     marginVertical: 10,
+    color: "#fff",
   },
   balance: {
     fontSize: 28,
     fontWeight: "bold",
     textAlign: "center",
-    color: "#2E86DE",
+    color: "#fff",
   },
   sectionTitle: {
     fontSize: 18,
@@ -152,8 +110,6 @@ const styles = StyleSheet.create({
   barChart: {
     marginVertical: 12,
     marginBottom: 20,
-    // backgroundColor: "#f5f5f5",
-    // paddingHorizontal: 10,
     borderRadius: 8,
     justifyContent: "center",
   },
@@ -199,10 +155,10 @@ const styles = StyleSheet.create({
   transactionItem: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 12,
+    paddingVertical: 18,
     borderRadius: 10,
     marginBottom: 8,
-    backgroundColor: "#eee",
+    backgroundColor: "#d9d9d9",
     paddingHorizontal: 10,
   },
   transactionText: {

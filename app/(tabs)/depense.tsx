@@ -1,6 +1,5 @@
 import AddExpenseModal from '@/components/ui/AjoutModal';
-import ExpenseDetailModal from '@/components/ui/ExpenseDetailModal'; // Ajoute ce fichier comme plus haut
-import TopHeader from '@/components/ui/topheader';
+import ExpenseDetailModal from '@/components/ui/ExpenseDetailModal';
 import { MaterialIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -10,9 +9,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export interface Expense {
   id: string;
   amount: number;
-  category: string;
+  category?: string;
+  source?: string;
   method: string;
-  type: string;
+  type: string; // "Dépense" ou "Revenu"
   date: string;
 }
 
@@ -20,7 +20,6 @@ export default function Depense() {
   const insets = useSafeAreaInsets();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-
   const [detailModalVisible, setDetailModalVisible] = useState<boolean>(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
 
@@ -42,8 +41,7 @@ export default function Depense() {
 
   // Pour la modification (à adapter si tu veux une vraie modale d’édition)
   const handleEdit = (expense: Expense) => {
-    // Tu peux ici ré-ouvrir le AddExpenseModal en mode édition, ou créer un EditExpenseModal
-    Alert.alert("Modification", "À implémenter : Edition de la dépense " + expense.category);
+    Alert.alert("Modification", "À implémenter : Edition de la dépense " + (expense.category || expense.source));
   };
 
   const handleShowDetail = (expense: Expense) => {
@@ -68,7 +66,6 @@ export default function Depense() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <TopHeader />
       <View style={styles.body}>
         <Text style={styles.title}>Mes Dépenses</Text>
         <FlatList
@@ -82,20 +79,40 @@ export default function Depense() {
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => handleShowDetail(item)}
-                style={styles.transactionItem}
+                style={[
+                  styles.transactionItem,
+                  {
+                    backgroundColor: item.type === "Revenu" ? "#e6faef" : "#fff7e6",
+                  }
+                ]}
               >
                 <View>
-                  <Text style={styles.transactionText}>{item.category}</Text>
-                  <Text style={styles.transactionDate}>{item.method} | {item.date}</Text>
+                  <Text style={styles.transactionText}>
+                    {item.type === "Revenu"
+                      ? item.source || "Revenu"
+                      : item.category || "Dépense"}
+                  </Text>
+                  <Text style={styles.transactionDate}>
+                    {item.method} | {item.date}
+                  </Text>
                 </View>
-                <Text style={styles.transactionAmount}>{item.amount.toLocaleString()} Ar</Text>
+                <Text
+                  style={[
+                    styles.transactionAmount,
+                    { color: item.type === "Revenu" ? "#16A34A" : "red" }
+                  ]}
+                >
+                  {item.amount.toLocaleString()} Ar
+                </Text>
               </TouchableOpacity>
             </Swipeable>
           )}
           ListEmptyComponent={
-            <Text style={{ color: "#888", textAlign: "center", marginTop: 40 }}>
-              Aucune dépense pour l’instant.
-            </Text>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <Text style={{ color: "#888", textAlign: "center", marginTop: 40, justifyContent: "center" }}>
+                Aucune dépense pour l’instant.
+              </Text>
+            </View>
           }
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}
           showsVerticalScrollIndicator={false}
@@ -137,7 +154,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 14,
+    paddingVertical: 18,
     borderRadius: 10,
     marginBottom: 8,
     backgroundColor: "#eee",
